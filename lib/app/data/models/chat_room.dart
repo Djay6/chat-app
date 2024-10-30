@@ -7,7 +7,7 @@ class ChatRoom {
   final String lastMessageType;
   final DateTime lastMessageTime;
   final String lastMessageSenderId;
-  final Map<String, int> unreadCount; // {userId: count}
+  final Map<String, int> unreadCount;
   final Map<String, MessageModel>? messages;
 
   ChatRoom({
@@ -22,19 +22,49 @@ class ChatRoom {
   });
 
   factory ChatRoom.fromJson(Map<String, dynamic> json) {
+    Map<String, MessageModel>? messagesMap;
+    if (json['messages'] != null) {
+      try {
+        final messagesData = json['messages'] as Map<Object?, Object?>;
+        messagesMap = messagesData.map((key, value) => MapEntry(key.toString(),
+            MessageModel.fromJson(Map<String, dynamic>.from(value as Map))));
+      } catch (e) {
+        print('Error parsing messages: $e');
+        messagesMap = null;
+      }
+    }
+
     return ChatRoom(
-      chatId: json['chatId'] ?? '',
-      participants: List<String>.from(json['participants'] ?? []),
-      lastMessage: json['lastMessage'] ?? '',
-      lastMessageType: json['lastMessageType'] ?? 'text',
-      lastMessageTime: DateTime.parse(
-          json['lastMessageTime'] ?? DateTime.now().toIso8601String()),
-      lastMessageSenderId: json['lastMessageSenderId'] ?? '',
-      unreadCount: Map<String, int>.from(json['unreadCount'] ?? {}),
-      messages: json['messages'] != null
-          ? Map<String, MessageModel>.from(json['messages']
-              .map((key, value) => MapEntry(key, MessageModel.fromJson(value))))
-          : null,
+      chatId: json['chatId']?.toString() ?? '',
+      participants:
+          (json['participants'] as List?)?.map((e) => e.toString()).toList() ??
+              [],
+      lastMessage: json['lastMessage']?.toString() ?? '',
+      lastMessageType: json['lastMessageType']?.toString() ?? 'text',
+      lastMessageTime: json['lastMessageTime'] != null
+          ? DateTime.parse(json['lastMessageTime'].toString())
+          : DateTime.now(),
+      lastMessageSenderId: json['lastMessageSenderId']?.toString() ?? '',
+      unreadCount: (json['unreadCount'] as Map<Object?, Object?>?)?.map(
+              (key, value) =>
+                  MapEntry(key.toString(), int.parse(value.toString()))) ??
+          {},
+      messages: messagesMap,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'chatId': chatId,
+      'participants': participants,
+      'lastMessage': lastMessage,
+      'lastMessageType': lastMessageType,
+      'lastMessageTime': lastMessageTime.toIso8601String(),
+      'lastMessageSenderId': lastMessageSenderId,
+      'unreadCount': unreadCount,
+      if (messages != null)
+        'messages':
+            messages!.map((key, value) => MapEntry(key, value.toJson())),
+    };
   }
 }

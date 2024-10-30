@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -64,6 +65,7 @@ class AuthController extends GetxController {
         'photoUrl': user.photoURL,
         'lastSeen': DateTime.now().toIso8601String(),
         'isOnline': true,
+        'fcmToken': await FirebaseMessaging.instance.getToken(),
       });
     } catch (e) {
       print('Error saving user data: $e');

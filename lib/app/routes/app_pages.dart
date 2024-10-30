@@ -1,7 +1,6 @@
 import 'package:chat_app/app/bindings/auth_binding.dart';
 import 'package:chat_app/app/bindings/home_binding.dart';
 import 'package:chat_app/app/bindings/message_binding.dart';
-import 'package:chat_app/app/middleware/auth_middleware.dart';
 import 'package:chat_app/app/modules/auth/views/login_view.dart';
 import 'package:chat_app/app/modules/chat/views/chat_room_view.dart';
 import 'package:chat_app/app/modules/home/views/home_view.dart';
@@ -25,11 +24,10 @@ class AppPages {
       name: '/home',
       page: () => const HomeView(),
       binding: HomeBinding(),
-      middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: Routes.CHAT,
-      page: () => const ChatRoomView(),
+      page: () => ChatRoomView(),
       binding: MessageBinding(),
     ),
   ];

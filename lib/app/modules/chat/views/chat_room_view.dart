@@ -1,11 +1,16 @@
-import 'package:chat_app/app/controllers/message_controller.dart';
+import 'package:chat_app/app/controllers/chat_controller.dart';
 import 'package:chat_app/app/widgets/message_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/state_manager.dart';
 
-class ChatRoomView extends GetView<MessageController> {
-  const ChatRoomView({Key? key}) : super(key: key);
+class ChatRoomView extends GetView<ChatController> {
+  ChatRoomView({Key? key}) : super(key: key) {
+    controller.initChat(
+      Get.arguments['userId'],
+      Get.arguments['chatId'],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

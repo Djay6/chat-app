@@ -23,13 +23,21 @@ class HomeView extends GetView<HomeController> {
         color: Theme.of(context).primaryColor,
         child: TabBar(
           controller: controller.tabController,
+          indicatorColor: Theme.of(context).primaryColor,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white.withOpacity(.5),
+          unselectedLabelStyle: TextStyle(color: Colors.white.withOpacity(.5)),
           tabs: const [
             Tab(
-              icon: Icon(Icons.chat),
+              icon: Icon(
+                Icons.chat,
+              ),
               text: 'Chats',
             ),
             Tab(
-              icon: Icon(Icons.person),
+              icon: Icon(
+                Icons.person,
+              ),
               text: 'Profile',
             ),
           ],

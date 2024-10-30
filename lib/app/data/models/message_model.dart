@@ -8,14 +8,16 @@ class MessageModel {
   final bool isRead;
 
   MessageModel({
-    required this.messageId,
+    String? messageId,
     required this.senderId,
     required this.receiverId,
     required this.content,
     this.imageUrl,
-    required this.timestamp,
+    DateTime? timestamp,
     this.isRead = false,
-  });
+  })  : this.messageId =
+            messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        this.timestamp = timestamp ?? DateTime.now();
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(

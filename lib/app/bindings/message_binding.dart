@@ -1,10 +1,10 @@
 import 'package:get/instance_manager.dart';
-
-import '../controllers/message_controller.dart';
+import '../controllers/chat_controller.dart';
 
 class MessageBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(MessageController());
+    // We'll reuse the existing ChatController instance
+    Get.find<ChatController>();
   }
 }

@@ -1,21 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/app/controllers/chat_controller.dart';
-import 'package:chat_app/app/data/models/message_model.dart';
 import 'package:chat_app/app/data/models/user_model.dart';
-import 'package:chat_app/app/routes/app_pages.dart';
 import 'package:chat_app/app/utils/time_formatter.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserListTile extends StatelessWidget {
   final UserModel user;
   final bool showLastMessage;
+  final String? lastMessage;
+  final DateTime? lastMessageTime;
+  final int unreadCount;
 
   const UserListTile({
     Key? key,
     required this.user,
     this.showLastMessage = false,
+    this.lastMessage,
+    this.lastMessageTime,
+    this.unreadCount = 0,
   }) : super(key: key);
 
   @override
@@ -26,75 +29,41 @@ class UserListTile extends StatelessWidget {
         child: user.photoUrl.isEmpty ? Text(user.name[0].toUpperCase()) : null,
       ),
       title: Text(user.name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(user.email),
-          if (showLastMessage)
-            FutureBuilder<String?>(
-              future: _getLastMessage(user.uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(
-                    snapshot.data!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
-        ],
-      ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 12,
-            height: 12,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: user.isOnline ? Colors.green : Colors.grey,
-            ),
-          ),
-          if (!user.isOnline)
+          if (showLastMessage && lastMessageTime != null)
             Text(
-              TimeFormatter.formatMessageTime(DateTime.parse(user.lastSeen)),
+              TimeFormatter.formatMessageTime(lastMessageTime!),
               style: const TextStyle(fontSize: 12),
+            ),
+          if (showLastMessage && unreadCount > 0)
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                unreadCount.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          if (!showLastMessage)
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: user.isOnline ? Colors.green : Colors.grey,
+              ),
             ),
         ],
       ),
-      onTap: () => _openChat(user),
+      onTap: () => Get.find<ChatController>().startNewChat(user),
     );
-  }
-
-  void _openChat(UserModel user) {
-    final chatController = Get.find<ChatController>();
-    final chatId = chatController.getChatId(user.uid);
-    Get.toNamed(
-      Routes.CHAT,
-      arguments: {
-        'userId': user.uid,
-        'chatId': chatId,
-        'userName': user.name,
-      },
-    );
-  }
-
-  Future<String?> _getLastMessage(String userId) async {
-    final chatController = Get.find<ChatController>();
-    final chatId = chatController.getChatId(userId);
-    final snapshot = await FirebaseDatabase.instance
-        .ref()
-        .child('chats/$chatId/messages')
-        .limitToLast(1)
-        .get();
-
-    if (snapshot.value != null) {
-      final message = MessageModel.fromJson(
-          Map<String, dynamic>.from((snapshot.value as Map).values.first));
-      return message.content;
-    }
-    return null;
   }
 }

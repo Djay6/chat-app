@@ -16,17 +16,19 @@ A real-time chat application built with Flutter and Firebase.
 ## Dependencies
 
 - get: ^4.6.6 (State Management)
-- firebase_core: ^2.24.2
-- firebase_auth: ^4.15.3
+- firebase_core: ^3.6.0
+- firebase_auth: ^5.3.1
 - google_sign_in: ^6.2.1
-- firebase_database: ^10.3.8
-- firebase_messaging: ^14.7.9
-- firebase_storage: ^11.6.0
+- firebase_database: ^11.1.4
+- firebase_messaging: ^15.1.3
+- firebase_storage: ^12.3.4
 - timeago: ^3.6.0
 - cached_network_image: ^3.3.1
 - image_picker: ^1.0.7
 - intl: ^0.19.0
 - permission_handler: ^11.2.0
+- googleapis_auth: ^1.6.0
+- flutter_local_notifications: 17.2.1+2
 
 ## Setup
 
