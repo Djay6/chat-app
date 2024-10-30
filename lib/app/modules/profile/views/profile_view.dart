@@ -101,11 +101,6 @@ class ProfileView extends GetView<ProfileController> {
           title: const Text('Email'),
           subtitle: Text(user.email),
         ),
-        ListTile(
-          title: const Text('Last Seen'),
-          subtitle: Text(
-              TimeFormatter.formatMessageTime(DateTime.parse(user.lastSeen))),
-        ),
       ],
     );
   }
@@ -113,11 +108,12 @@ class ProfileView extends GetView<ProfileController> {
   Widget _buildSignOutButton() {
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
+        iconColor: Colors.white,
         backgroundColor: Colors.red,
         minimumSize: const Size(double.infinity, 50),
       ),
       icon: const Icon(Icons.logout),
-      label: const Text('Sign Out'),
+      label: const Text('Sign Out', style: TextStyle(color: Colors.white)),
       onPressed: controller.signOut,
     );
   }
